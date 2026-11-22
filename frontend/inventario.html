@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BeautyData | Gestión de Inventario y Dashboard Analítico</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+
+  <style>
+    :root {
+      --wine: #54283f;
+      --wine-dark: #321d2b;
+      --pink: #d99bae;
+      --cream: #fbf7f4;
+      --gold: #bd925d;
+      --text: #382c33;
+      --muted: #8b7a84;
+      --border: #efe4ea;
+      --shadow: 0 10px 26px rgba(84, 40, 63, 0.08);
+      --ok: #137333;
+      --ok-bg: #e6f4ea;
+      --warn: #b06000;
+      --warn-bg: #fef7e0;
+      --danger: #c5221f;
+      --danger-bg: #fce8e6;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text);
+      background: #fdfbfc;
+    }
+
+    a { text-decoration: none; color: inherit; }
+    button, input, select { font: inherit; }
+
+    .topbar {
+      background: var(--wine);
+      color: white;
+      padding: 9px;
+      text-align: center;
+      font-size: 10px;
+      letter-spacing: 2px;
+      font-weight: 600;
+    }
+
+    .navbar {
+      min-height: 80px;
+      padding: 0 7%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      background: white;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--wine);
+      line-height: 1.05;
+    }
+
+    .logo span { color: var(--pink); }
+
+    .logo small {
+      display: block;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 9px;
+      letter-spacing: 4px;
+      color: var(--gold);
+      margin-top: 3px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .nav-links a {
+      font-size: 12px;
+      color: #66545e;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--wine);
+    }
+
+    .catalog-hero {
+      background: linear-gradient(110deg, #f8e9ee, #fbf5f1);
+      padding: 38px 7%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .catalog-hero span {
+      font-size: 10px;
+      color: var(--gold);
+      letter-spacing: 3.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .catalog-hero h1 {
+      font-family: 'Playfair Display', serif;
+      color: var(--wine);
+      font-size: clamp(28px, 3.8vw, 42px);
+      margin: 6px 0 10px;
+    }
+
+    .catalog-hero p {
+      color: #796771;
+      font-size: 13px;
+      line-height: 1.7;
+      max-width: 640px;
+    }
+
+    .container {
+      max-width: 1300px;
+      margin: auto;
+      padding: 28px 7% 75px;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .categories {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .filtro {
+      background: white;
+      border: 1px solid #e6d7df;
+      color: #6f5b66;
+      border-radius: 30px;
+      padding: 9px 18px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .filtro:hover,
+    .filtro.activo {
+      background: var(--wine);
+      color: white;
+      border-color: var(--wine);
+    }
+
+    .filter-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .search-box, .select-control {
+      padding: 9px 14px;
+      border: 1px solid #e6d7df;
+      border-radius: 8px;
+      background: white;
+      font-size: 12px;
+      color: var(--text);
+      outline: none;
+    }
+
+    .search-box { min-width: 210px; }
+    .search-box:focus, .select-control:focus { border-color: var(--wine); }
+
+    .btn-spark {
+      background: var(--wine);
+      color: white;
+      border: none;
+      padding: 9px 16px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-spark:hover { background: #6f3654; }
+    .btn-spark:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-bottom: 26px;
+    }
+
+    .kpi-card {
+      background: white;
+      border: 1px solid var(--border);
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .kpi-card span {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.4px;
+      color: var(--muted);
+      text-transform: uppercase;
+      display: block;
+    }
+
+    .kpi-card h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      color: var(--wine);
+      margin-top: 8px;
+    }
+
+    .kpi-sub {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    .dashboard-analytics-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 26px;
+      box-shadow: var(--shadow);
+    }
+
+    .dashboard-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .dashboard-header-bar h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 21px;
+      color: var(--wine);
+    }
+
+    .status-pill {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 99px;
+      background: #f8e9ee;
+      color: var(--wine);
+    }
+
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-bottom: 18px;
+    }
+
+    .chart-box {
+      background: var(--cream);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px;
+    }
+
+    .chart-box h4 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--wine-dark);
+      margin-bottom: 4px;
+    }
+
+    .chart-box p {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .chart-canvas-wrap {
+      position: relative;
+      height: 255px;
+      width: 100%;
+    }
+
+    .empty-chart-msg {
+      display: none;
+      text-align: center;
+      padding: 14px;
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      background: white;
+      border-radius: 6px;
+      border: 1px dashed #e5d6de;
+    }
+
+    .decision-note {
+      background: #f8e9ee;
+      border-left: 4px solid var(--wine);
+      padding: 12px 16px;
+      border-radius: 6px;
+      font-size: 12px;
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    .section-box {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .section-box h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      color: var(--wine);
+      margin-bottom: 18px;
+    }
+
+    .table-responsive { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 12px;
+    }
+
+    th, td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    th {
+      background-color: #f8e9ee;
+      color: var(--wine);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 10px;
+      letter-spacing: 1px;
+      white-space: nowrap;
+    }
+
+    tr:hover td { background-color: #fcf9fa; }
+
+    .celda-nowrap { white-space: nowrap; }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 99px;
+      font-size: 10px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .badge-ok { background: var(--ok-bg); color: var(--ok); }
+    .badge-warn { background: var(--warn-bg); color: var(--warn); }
+    .badge-danger { background: var(--danger-bg); color: var(--danger); }
+
+    .acciones-grupo {
+      display: flex;
+      gap: 6px;
+      flex-wrap: nowrap;
+      align-items: center;
+    }
+
+    .btn-reincorporar {
+      background: var(--wine);
+      color: white;
+      border: none;
+      padding: 6px 11px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+      transition: background 0.2s;
+    }
+
+    .btn-reincorporar:hover { background: #6f3654; }
+
+    .btn-lote {
+      background: #f8e9ee;
+      color: var(--wine);
+      border: 1px solid #e6ced9;
+      padding: 6px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .btn-lote:hover { background: #f1dce4; }
+
+    footer {
+      background: var(--wine-dark);
+      color: white;
+      text-align: center;
+      padding: 32px 15px;
+      font-size: 11px;
+      margin-top: 60px;
+    }
+
+    footer strong {
+      display: block;
+      font-family: 'Playfair Display', serif;
+      color: #eab5c9;
+      font-size: 22px;
+      margin-bottom: 8px;
+    }
+
+    @media (max-width: 980px) {
+      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+      .charts-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .kpi-grid { grid-template-columns: 1fr; }
+      .nav-links { gap: 12px; flex-wrap: wrap; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="topbar">
+    BELLEZA, COLOR Y ESTILO EN UN SOLO LUGAR
+  </div>
+
+  <nav class="navbar">
+    <a href="index.html" class="logo">
+      Beauty<span>Data.</span>
+      <small>BEAUTY & COSMETICS</small>
+    </a>
+
+    <div class="nav-links">
+      <a href="index.html">Inicio</a>
+      <a href="productos.html">Productos</a>
+      <a href="clientes.html">Clientes</a>
+      <a href="ventas.html">Ventas</a>
+      <a href="inventario.html" class="active">Inventario</a>
+    </div>
+  </nav>
+
+  <section class="catalog-hero">
+    <div>
+      <span>OPERACIÓN, COMPRAS POR CLIENTE Y ANALÍTICA PYSPARK</span>
+      <h1>Gestión de Inventario y Dashboard</h1>
+      <p>Analiza las compras según la persona que compró, verifica la continuidad en los nodos con PySpark y controla el inventario del catálogo.</p>
+    </div>
+    <div style="font-size: 56px;">📊</div>
+  </section>
+
+  <main class="container">
+
+    <div class="toolbar">
+      <div class="categories" id="filtrosCategorias">
+        <button class="filtro activo" onclick="filtrarPorCategoria('Todos', this)">Todos</button>
+        <button class="filtro" onclick="filtrarPorCategoria('Rostro', this)">Rostro</button>
+        <button class="filtro" onclick="filtrarPorCategoria('Ojos', this)">Ojos</button>
+        <button class="filtro" onclick="filtrarPorCategoria('Labios', this)">Labios</button>
+        <button class="filtro" onclick="filtrarPorCategoria('Cuidado facial', this)">Cuidado facial</button>
+        <button class="filtro" onclick="filtrarPorCategoria('Accesorios', this)">Accesorios</button>
+      </div>
+
+      <div class="filter-controls">
+        <select id="filtroCliente" class="select-control" onchange="actualizarGraficos()">
+          <option value="todos">Todos los clientes</option>
+        </select>
+
+        <select id="filtroMetrica" class="select-control" onchange="actualizarGraficos()">
+          <option value="monto">Métrica: Monto comprado ($ COP)</option>
+          <option value="compras">Métrica: Número de compras</option>
+        </select>
+
+        <input
+          type="text"
+          id="buscadorProducto"
+          class="search-box"
+          placeholder="Buscar por ID o nombre..."
+          oninput="renderizarConFiltros()"
+        >
+
+        <button id="btnEjecutarSpark" type="button" class="btn-spark" onclick="ejecutarSparkDesdeUI()">
+          ⚡ Procesar PySpark
+        </button>
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <span>Compras Recolectadas</span>
+        <h2 id="kpiVentasRecolectadas">0</h2>
+        <div class="kpi-sub" id="kpiSubVentas">Registros únicos activos</div>
+      </div>
+
+      <div class="kpi-card">
+        <span>Total Comprado</span>
+        <h2 id="kpiIngresosRecolectados">$0</h2>
+        <div class="kpi-sub">Monto acumulado por clientes</div>
+      </div>
+
+      <div class="kpi-card">
+        <span>Alertas de Stock</span>
+        <h2 id="kpiAlertas">0</h2>
+        <div class="kpi-sub" id="kpiSubAlertas">Stock bajo (≤ 5) o agotado</div>
+      </div>
+
+      <div class="kpi-card">
+        <span>Estado del Clúster</span>
+        <h2 id="kpiEstadoCluster" style="font-size: 22px; margin-top: 11px;">Operativo</h2>
+        <div class="kpi-sub" id="kpiSubCluster">4 nodos lógicos sincronizados</div>
+      </div>
+    </div>
+
+    <div class="dashboard-analytics-card">
+      <div class="dashboard-header-bar">
+        <h3>Dashboard de Compras por Cliente y Continuidad en Nodos</h3>
+        <span class="status-pill" id="estadoFuenteAnalitica">Sincronizando datos recolectados...</span>
+      </div>
+
+      <div class="charts-grid">
+        <div class="chart-box">
+          <h4>1. Compras Según la Persona que Compró (Barras)</h4>
+          <p id="subtituloGraficoClientes">Monto o cantidad de compras agrupadas por cliente</p>
+          <div class="chart-canvas-wrap">
+            <canvas id="graficoClientesBarras"></canvas>
+          </div>
+          <div id="avisoSinClientes" class="empty-chart-msg">
+            Aún no hay compras registradas por clientes. Realiza una compra en <strong>Productos</strong> para visualizarla aquí.
+          </div>
+        </div>
+
+        <div class="chart-box">
+          <h4>2. Secuencia de Compras Recolectadas (Línea)</h4>
+          <p id="subtituloGraficoLinea">Evolución de montos por compra (se mantiene con failover si un nodo cae)</p>
+          <div class="chart-canvas-wrap">
+            <canvas id="graficoComprasLinea"></canvas>
+          </div>
+          <div id="avisoSinComprasLinea" class="empty-chart-msg">
+            Sin compras que coincidan con el filtro seleccionado.
+          </div>
+        </div>
+      </div>
+
+      <div class="decision-note">
+        <strong>Toma de decisiones:</strong> El gráfico por cliente permite identificar quiénes realizan mayor volumen o frecuencia de compra para enfocar promociones o fidelización, mientras que el gráfico de secuencia y el estado del clúster confirman que los datos siguen disponibles incluso si ocurre un fallo en un nodo lógico.
+      </div>
+    </div>
+
+    <div class="section-box">
+      <h3>Catálogo e Inventario</h3>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Producto</th>
+              <th>Categoría</th>
+              <th>Precio Unitario</th>
+              <th>Stock Disponible</th>
+              <th>Estado</th>
+              <th>Reposición</th>
+            </tr>
+          </thead>
+          <tbody id="tablaInventarioBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    <strong>BeautyData.</strong>
+    Sistema de recolección de datos y analítica para comercio de cosméticos.<br>
+    © 2026 BeautyData · Todos los derechos reservados.
+  </footer>
+
+  <script>
+    const formatoCOP = new Intl.NumberFormat("es-CO", {
+      style: "currency",
+      currency: "COP",
+      maximumFractionDigits: 0
+    });
+
+    const productosOficialesBeautyData = [
+      { id: 101, nombre: "Base Fit Me", categoria: "Rostro", precio: 48000, stock: 15 },
+      { id: 102, nombre: "BB Cream", categoria: "Rostro", precio: 46000, stock: 12 },
+      { id: 103, nombre: "Rubor Compacto", categoria: "Rostro", precio: 42000, stock: 10 },
+      { id: 104, nombre: "Corrector Fit Me", categoria: "Rostro", precio: 35000, stock: 18 },
+      { id: 105, nombre: "Polvo Compacto", categoria: "Rostro", precio: 29000, stock: 14 },
+      { id: 201, nombre: "Máscara de Pestañas Lash Sensational", categoria: "Ojos", precio: 41000, stock: 15 },
+      { id: 202, nombre: "Delineador de Ojos Liquid Ink", categoria: "Ojos", precio: 28000, stock: 12 },
+      { id: 203, nombre: "Paleta de Sombras Nudes", categoria: "Ojos", precio: 52000, stock: 8 },
+      { id: 301, nombre: "Labial Super Stay Matte Ink", categoria: "Labios", precio: 38000, stock: 20 },
+      { id: 302, nombre: "Brillo Labial Lifter Gloss", categoria: "Labios", precio: 39000, stock: 14 },
+      { id: 303, nombre: "Delineador Retráctil para Labios", categoria: "Labios", precio: 22000, stock: 16 },
+      { id: 401, nombre: "Sérum Facial Hidratante", categoria: "Cuidado facial", precio: 65000, stock: 9 },
+      { id: 402, nombre: "Mascarilla de Carbón Activado", categoria: "Cuidado facial", precio: 18000, stock: 25 },
+      { id: 403, nombre: "Crema Hidratante Facial", categoria: "Cuidado facial", precio: 29000, stock: 11 },
+      { id: 501, nombre: "Brocha para Maquillaje Profesional", categoria: "Accesorios", precio: 28000, stock: 12 },
+      { id: 502, nombre: "Esponja Blender", categoria: "Accesorios", precio: 15000, stock: 20 }
+    ];
+
+    let categoriaSeleccionada = "Todos";
+    let inventarioActual = [];
+    let ventasRecolectadas = [];
+    let metricasNodosActuales = {
+      totalVentas: 0,
+      montoTotal: 0,
+      nodos: []
+    };
+    let chartClientes = null;
+    let chartLinea = null;
+
+    function leerJSONSeguro(clave, valorDefecto) {
+      try {
+        const raw = localStorage.getItem(clave);
+        return raw ? JSON.parse(raw) : valorDefecto;
+      } catch {
+        return valorDefecto;
+      }
+    }
+
+    function obtenerCategoriaDeProductosTexto(textoProductos) {
+      const txt = String(textoProductos || "").toLowerCase();
+      if (!txt) return "General";
+      for (const prod of inventarioActual.length ? inventarioActual : productosOficialesBeautyData) {
+        if (txt.includes(String(prod.nombre || "").toLowerCase())) {
+          return prod.categoria || "General";
+        }
+      }
+      return "General";
+    }
+
+    function poblarSelectorClientes() {
+      const select = document.getElementById("filtroCliente");
+      if (!select) return;
+      const valorPrevio = select.value || "todos";
+      const nombresUnicos = Array.from(
+        new Set(
+          ventasRecolectadas
+            .map(v => String(v.cliente || "").trim())
+            .filter(Boolean)
+        )
+      );
+
+      select.innerHTML = `<option value="todos">Todos los clientes</option>` +
+        nombresUnicos.map(nom => `<option value="${nom}">${nom}</option>`).join("");
+
+      if (Array.from(select.options).some(opt => opt.value === valorPrevio)) {
+        select.value = valorPrevio;
+      } else {
+        select.value = "todos";
+      }
+    }
+
+    async function obtenerDatosRecolectadosBackend() {
+      try {
+        const [respResumen, respCluster] = await Promise.all([
+          fetch("/api/analytics/resumen"),
+          fetch("/api/cluster/estado")
+        ]);
+
+        if (respResumen.ok) {
+          const dataRes = await respResumen.json();
+          const tr = dataRes.metricasTiempoReal || {};
+          metricasNodosActuales = {
+            totalVentas: Number(tr.totalVentas || 0),
+            montoTotal: Number(tr.montoTotal || 0),
+            nodos: tr.nodos || []
+          };
+
+          const nodosCaidos = metricasNodosActuales.nodos.filter(n => n.caido).map(n => n.nodo);
+          const pill = document.getElementById("estadoFuenteAnalitica");
+          if (nodosCaidos.length > 0) {
+            pill.textContent = `Failover activo (${nodosCaidos.join(", ")} caído)`;
+            pill.style.background = "#fef7e0";
+            pill.style.color = "#b06000";
+          } else {
+            pill.textContent = dataRes.fuenteSparkDisponible
+              ? "PySpark + Clúster CSV activo"
+              : "Clúster CSV activo (tiempo real)";
+            pill.style.background = "#f8e9ee";
+            pill.style.color = "#54283f";
+          }
+        }
+
+        if (respCluster.ok) {
+          const dataClus = await respCluster.json();
+          ventasRecolectadas = Array.isArray(dataClus.ventas) ? dataClus.ventas : [];
+        }
+      } catch {
+        document.getElementById("estadoFuenteAnalitica").textContent = "Sin conexión al backend";
+        ventasRecolectadas = [];
+      }
+      poblarSelectorClientes();
+    }
+
+    async function obtenerProductosBase() {
+      try {
+        const resp = await fetch("/api/productos");
+        if (resp.ok) {
+          const data = await resp.json();
+          const lista = Array.isArray(data) ? data : (Array.isArray(data.productos) ? data.productos : null);
+          if (lista && lista.length > 0) {
+            return lista.map((p, i) => ({
+              id: Number(p.id) || (100 + i),
+              nombre: p.nombre || p.producto || `Producto ${i + 1}`,
+              categoria: p.categoria || "Rostro",
+              precio: Number(p.precio) || 0,
+              stock: Number(p.stock ?? p.cantidad ?? 0)
+            }));
+          }
+        }
+      } catch {
+        // Respaldo local
+      }
+
+      const guardado = leerJSONSeguro("beautydata_inventario_general", null);
+      if (Array.isArray(guardado) && guardado.length > 0) return guardado;
+      localStorage.setItem("beautydata_inventario_general", JSON.stringify(productosOficialesBeautyData));
+      return productosOficialesBeautyData.map(p => ({ ...p }));
+    }
+
+    async function cargarTodo() {
+      await obtenerDatosRecolectadosBackend();
+      const base = await obtenerProductosBase();
+      inventarioActual = base.map(p => ({ ...p }));
+
+      const alertasStock = inventarioActual.filter(p => (Number(p.stock) || 0) <= 5).length;
+      const agotados = inventarioActual.filter(p => (Number(p.stock) || 0) === 0).length;
+      const nodosCaidos = (metricasNodosActuales.nodos || []).filter(n => n.caido).map(n => n.nodo);
+
+      document.getElementById("kpiVentasRecolectadas").textContent = metricasNodosActuales.totalVentas;
+      document.getElementById("kpiSubVentas").textContent = `${ventasRecolectadas.length} compra(s) en lectura activa`;
+      document.getElementById("kpiIngresosRecolectados").textContent = formatoCOP.format(metricasNodosActuales.montoTotal);
+      document.getElementById("kpiAlertas").textContent = `${alertasStock}`;
+      document.getElementById("kpiSubAlertas").textContent = `${agotados} agotados · ${Math.max(0, alertasStock - agotados)} stock bajo`;
+
+      const estadoClusterEl = document.getElementById("kpiEstadoCluster");
+      const subClusterEl = document.getElementById("kpiSubCluster");
+      if (nodosCaidos.length > 0) {
+        estadoClusterEl.textContent = "Failover";
+        estadoClusterEl.style.color = "var(--warn)";
+        subClusterEl.textContent = `Réplica activa por fallo en ${nodosCaidos.join(", ")}`;
+      } else {
+        estadoClusterEl.textContent = "Operativo";
+        estadoClusterEl.style.color = "var(--ok)";
+        subClusterEl.textContent = "4 nodos lógicos sincronizados";
+      }
+
+      actualizarGraficos();
+      renderizarConFiltros();
+    }
+
+    function actualizarGraficos() {
+      const clienteFiltro = document.getElementById("filtroCliente")?.value || "todos";
+      const metricaFiltro = document.getElementById("filtroMetrica")?.value || "monto";
+      const textoBusqueda = (document.getElementById("buscadorProducto")?.value || "").trim().toLowerCase();
+
+      const ventasFiltradas = ventasRecolectadas.filter(v => {
+        const clienteNom = String(v.cliente || "").trim();
+        const cumpleCliente = clienteFiltro === "todos" || clienteNom === clienteFiltro;
+        const catVenta = obtenerCategoriaDeProductosTexto(v.productos);
+        const cumpleCat = categoriaSeleccionada === "Todos" || catVenta === categoriaSeleccionada;
+        const cumpleTexto = !textoBusqueda ||
+          String(v.idVenta || "").toLowerCase().includes(textoBusqueda) ||
+          clienteNom.toLowerCase().includes(textoBusqueda) ||
+          String(v.productos || "").toLowerCase().includes(textoBusqueda);
+        return cumpleCliente && cumpleCat && cumpleTexto;
+      });
+
+      const mapaClientes = new Map();
+      for (const v of ventasFiltradas) {
+        const nombreCli = String(v.cliente || "Cliente").trim();
+        const actual = mapaClientes.get(nombreCli) || { monto: 0, compras: 0 };
+        actual.monto += Number(v.total || 0);
+        actual.compras += 1;
+        mapaClientes.set(nombreCli, actual);
+      }
+
+      const labelsClientes = Array.from(mapaClientes.keys());
+      const valoresClientes = Array.from(mapaClientes.values()).map(d =>
+        metricaFiltro === "compras" ? d.compras : d.monto
+      );
+
+      document.getElementById("avisoSinClientes").style.display = labelsClientes.length === 0 ? "block" : "none";
+
+      const ctxClientes = document.getElementById("graficoClientesBarras").getContext("2d");
+      if (chartClientes) chartClientes.destroy();
+      chartClientes = new Chart(ctxClientes, {
+        type: "bar",
+        data: {
+          labels: labelsClientes,
+          datasets: [{
+            label: metricaFiltro === "compras" ? "Compras realizadas" : "Monto comprado ($ COP)",
+            data: valoresClientes,
+            backgroundColor: ["#54283f", "#bd925d", "#d99bae", "#7d4e67", "#a67b5b"],
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: { y: { beginAtZero: true } }
+        }
+      });
+
+      document.getElementById("avisoSinComprasLinea").style.display = ventasFiltradas.length === 0 ? "block" : "none";
+
+      const labelsLinea = ventasFiltradas.map((v, idx) =>
+        `${v.cliente || "Cliente"} (${v.idVenta || "#" + (idx + 1)})`
+      );
+      const valoresLinea = ventasFiltradas.map(v => Number(v.total || 0));
+
+      const ctxLinea = document.getElementById("graficoComprasLinea").getContext("2d");
+      if (chartLinea) chartLinea.destroy();
+      chartLinea = new Chart(ctxLinea, {
+        type: "line",
+        data: {
+          labels: labelsLinea,
+          datasets: [{
+            label: "Monto de compra ($ COP)",
+            data: valoresLinea,
+            borderColor: "#54283f",
+            backgroundColor: "rgba(217, 155, 174, 0.28)",
+            pointBackgroundColor: "#bd925d",
+            pointBorderColor: "#54283f",
+            pointRadius: 5,
+            tension: 0.25,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: { y: { beginAtZero: true } }
+        }
+      });
+
+      document.getElementById("subtituloGraficoClientes").textContent = metricaFiltro === "compras"
+        ? `Cantidad de compras por persona (${clienteFiltro === "todos" ? "todos los clientes" : clienteFiltro})`
+        : `Monto acumulado en COP por persona (${clienteFiltro === "todos" ? "todos los clientes" : clienteFiltro})`;
+
+      document.getElementById("subtituloGraficoLinea").textContent =
+        `Mostrando ${ventasFiltradas.length} compra(s) · Categoría: ${categoriaSeleccionada}`;
+    }
+
+    function obtenerEstadoStock(stock) {
+      if (stock <= 0) return { texto: "Agotado", clase: "badge-danger" };
+      if (stock <= 5) return { texto: "Stock bajo", clase: "badge-warn" };
+      return { texto: "Disponible", clase: "badge-ok" };
+    }
+
+    function renderizarConFiltros() {
+      const textoBusqueda = (document.getElementById("buscadorProducto")?.value || "").trim().toLowerCase();
+      const tbody = document.getElementById("tablaInventarioBody");
+
+      let filtrados = [...inventarioActual];
+      if (categoriaSeleccionada !== "Todos") {
+        filtrados = filtrados.filter(p => p.categoria === categoriaSeleccionada);
+      }
+      if (textoBusqueda) {
+        filtrados = filtrados.filter(p =>
+          String(p.id).toLowerCase().includes(textoBusqueda) ||
+          (p.nombre || "").toLowerCase().includes(textoBusqueda)
+        );
+      }
+      filtrados.sort((a, b) => a.id - b.id);
+
+      if (filtrados.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" style="text-align:center; padding:24px; color: var(--muted);">
+              No se encontraron productos con el filtro actual.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = filtrados.map(p => {
+        const stockNum = Number(p.stock) || 0;
+        const estado = obtenerEstadoStock(stockNum);
+
+        return `
+          <tr>
+            <td class="celda-nowrap"><strong>#${p.id}</strong></td>
+            <td><strong>${p.nombre}</strong></td>
+            <td class="celda-nowrap">
+              <span style="background: #f8e9ee; color: var(--wine); padding: 4px 10px; border-radius: 4px; font-weight: 600; font-size: 11px;">
+                ${p.categoria}
+              </span>
+            </td>
+            <td class="celda-nowrap"><strong>${formatoCOP.format(p.precio)}</strong></td>
+            <td class="celda-nowrap" style="font-weight: 700;">${stockNum} disponibles</td>
+            <td class="celda-nowrap"><span class="badge ${estado.clase}">${estado.texto}</span></td>
+            <td class="celda-nowrap">
+              <div class="acciones-grupo">
+                <button class="btn-reincorporar" onclick="reponerCantidad(${p.id}, 1)">+1</button>
+                <button class="btn-lote" onclick="reponerCantidad(${p.id}, 5)">+5</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    window.ejecutarSparkDesdeUI = async function() {
+      const btn = document.getElementById("btnEjecutarSpark");
+      btn.disabled = true;
+      btn.textContent = "⏳ Ejecutando Spark...";
+      try {
+        const resp = await fetch("/api/analytics/ejecutar", { method: "POST" });
+        const data = await resp.json();
+        alert(data.mensaje || (data.success ? "PySpark ejecutado." : "No se pudo ejecutar PySpark."));
+        await cargarTodo();
+      } catch {
+        alert("Error al conectar con el backend para ejecutar PySpark.");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "⚡ Procesar PySpark";
+      }
+    };
+
+    window.filtrarPorCategoria = function(categoria, botonSeleccionado) {
+      categoriaSeleccionada = categoria;
+      document.querySelectorAll(".filtro").forEach(btn => btn.classList.remove("activo"));
+      if (botonSeleccionado) botonSeleccionado.classList.add("activo");
+      actualizarGraficos();
+      renderizarConFiltros();
+    };
+
+    window.reponerCantidad = function(idProducto, cantidad) {
+      let base = leerJSONSeguro("beautydata_inventario_general", productosOficialesBeautyData);
+      const idx = base.findIndex(item => Number(item.id) === Number(idProducto));
+      if (idx !== -1) {
+        base[idx].stock = (Number(base[idx].stock) || 0) + Number(cantidad || 1);
+        localStorage.setItem("beautydata_inventario_general", JSON.stringify(base));
+        cargarTodo();
+      }
+    };
+
+    window.addEventListener("focus", () => {
+      cargarTodo();
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+      cargarTodo();
+    });
+  </script>
+
+</body>
+</html>

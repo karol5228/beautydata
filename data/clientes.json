@@ -1,0 +1,52 @@
+[
+  {
+    "id": "CLI-1",
+    "documento": "DOC-63374",
+    "nombre": "sara",
+    "correo": "karolnataly52@gmail.com",
+    "comprasRealizadas": 3,
+    "fechaRegistro": "20/11/2026, 11:34:23 p. m.",
+    "ultimaCompra": "21/11/2026, 12:22:51 a. m.",
+    "nodoAsignado": "nodo1"
+  },
+  {
+    "id": "CLI-2",
+    "documento": "DOC-40019",
+    "nombre": "karen",
+    "correo": "karolnataly52@gmail.com",
+    "comprasRealizadas": 2,
+    "fechaRegistro": "21/11/2026, 10:25:40 a. m.",
+    "ultimaCompra": "21/11/2026, 10:33:45 a. m.",
+    "nodoAsignado": "nodo2"
+  },
+  {
+    "id": "CLI-3",
+    "documento": "DOC-82822",
+    "nombre": "daniel lopez",
+    "correo": "karolnataly52@gmail.com",
+    "comprasRealizadas": 2,
+    "fechaRegistro": "21/11/2026, 10:38:02 a. m.",
+    "ultimaCompra": "21/11/2026, 10:47:00 a. m.",
+    "nodoAsignado": "nodo3"
+  },
+  {
+    "id": "CLI-4",
+    "documento": "DOC-88598",
+    "nombre": "erika",
+    "correo": "erika22@gmail.com",
+    "comprasRealizadas": 3,
+    "fechaRegistro": "21/11/2026, 10:48:08 a. m.",
+    "ultimaCompra": "21/11/2026, 1:02:58 p. m.",
+    "nodoAsignado": "nodo4"
+  },
+  {
+    "id": "CLI-5",
+    "documento": "DOC-12186",
+    "nombre": "Karol Nataly Erira",
+    "correo": "karolnataly52@gmail.com",
+    "comprasRealizadas": 11,
+    "fechaRegistro": "21/11/2026, 2:55:12 p. m.",
+    "ultimaCompra": "21/11/2026, 5:02:20 p. m.",
+    "nodoAsignado": "nodo1"
+  }
+]

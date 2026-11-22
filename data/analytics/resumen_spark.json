@@ -1,0 +1,67 @@
+{
+  "ejecutado_en": "2026-11-21T17:14:01",
+  "modo_ejecucion": "local[*] (simulación lógica 4 nodos)",
+  "total_inicial": 1,
+  "duplicados_eliminados": 0,
+  "total_limpio": 1,
+  "total_registros_limpios": 1,
+  "total_recaudado_general": 35000.0,
+  "columnas": [
+    "idVenta",
+    "cliente",
+    "documento",
+    "correo",
+    "total",
+    "fecha",
+    "productos",
+    "nodo",
+    "nodoOrigen",
+    "nodoReplica"
+  ],
+  "fuentes_activas": [
+    {
+      "nodo": "nodo1",
+      "archivo": "C:\\Users\\-Karol Nataly-\\Desktop\\BEAUTYDATA\\cluster\\nodo1\\infor.csv",
+      "fuente": "primario",
+      "modo": "primario",
+      "estado": "PRIMARIO_ACTIVO"
+    },
+    {
+      "nodo": "nodo2",
+      "archivo": "C:\\Users\\-Karol Nataly-\\Desktop\\BEAUTYDATA\\cluster\\nodo2\\infor.csv",
+      "fuente": "primario",
+      "modo": "primario",
+      "estado": "PRIMARIO_ACTIVO"
+    },
+    {
+      "nodo": "nodo3",
+      "archivo": "C:\\Users\\-Karol Nataly-\\Desktop\\BEAUTYDATA\\cluster\\nodo3\\infor.csv",
+      "fuente": "primario",
+      "modo": "primario",
+      "estado": "PRIMARIO_ACTIVO"
+    },
+    {
+      "nodo": "nodo4",
+      "archivo": "C:\\Users\\-Karol Nataly-\\Desktop\\BEAUTYDATA\\cluster\\nodo4\\infor.csv",
+      "fuente": "primario",
+      "modo": "primario",
+      "estado": "PRIMARIO_ACTIVO"
+    }
+  ],
+  "distribucion_nodos": [
+    {
+      "nodo": "nodo1",
+      "total_registros": 1
+    }
+  ],
+  "resumen_secundario": {
+    "tipo": "total_recaudado_por_nodo",
+    "datos": [
+      {
+        "nodo": "nodo1",
+        "cantidad_ventas": 1,
+        "total_recaudado": 35000.0
+      }
+    ]
+  }
+}

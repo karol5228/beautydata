@@ -1,0 +1,32 @@
+[
+  {
+    "idVenta": "VTA-1795297389295-120",
+    "cliente": "Karol Nataly Erira",
+    "documento": "DOC-12186",
+    "correo": "karolnataly52@gmail.com",
+    "total": 38000,
+    "fecha": "21/11/2026, 4:43:09 p. m.",
+    "productos": "Máscara de Pestañas",
+    "nodo": "nodo1"
+  },
+  {
+    "idVenta": "VTA-1795297105692-661",
+    "cliente": "Karol Nataly Erira",
+    "documento": "DOC-12186",
+    "correo": "karolnataly52@gmail.com",
+    "total": 45000,
+    "fecha": "21/11/2026, 4:38:25 p. m.",
+    "productos": "Paleta de Sombras",
+    "nodo": "nodo1"
+  },
+  {
+    "idVenta": "VTA-1795298215408-212",
+    "cliente": "Karol Nataly Erira",
+    "documento": "DOC-12186",
+    "correo": "karolnataly52@gmail.com",
+    "total": 42000,
+    "fecha": "21/11/2026, 4:56:55 p. m.",
+    "productos": "Rubor Compacto",
+    "nodo": "nodo1"
+  }
+]

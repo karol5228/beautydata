@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BeautyData | Módulo de Ventas</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;0,800;1,400&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --wine: #54283f;
+      --wine-dark: #3b1c2d;
+      --pink: #d99bae;
+      --pink-light: #f9eff2;
+      --cream: #fbf7f4;
+      --gold: #bd925d;
+      --text: #382c33;
+      --muted: #8c7a84;
+      --white: #ffffff;
+      --shadow: 0 15px 35px rgba(84, 40, 63, 0.08);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    .topbar {
+      background: var(--wine-dark);
+      color: white;
+      text-align: center;
+      padding: 10px 15px;
+      font-size: 11px;
+      letter-spacing: 2px;
+      font-weight: 500;
+    }
+
+    header {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid rgba(217, 155, 174, 0.2);
+    }
+
+    .navbar {
+      max-width: 1200px;
+      margin: auto;
+      padding: 20px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 30px;
+      font-weight: 700;
+      color: var(--wine);
+      letter-spacing: -0.5px;
+    }
+
+    .logo span { color: var(--gold); }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+    }
+
+    .nav-links a {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      transition: color 0.3s ease;
+      position: relative;
+      padding-bottom: 3px;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--wine);
+    }
+
+    .nav-links a.active::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 2px;
+      bottom: 0;
+      left: 0;
+      background-color: var(--pink);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 50px 25px 80px;
+    }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: 45px;
+    }
+
+    .section-tag {
+      color: var(--gold);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .page-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(32px, 4vw, 45px);
+      color: var(--wine-dark);
+      margin-bottom: 15px;
+    }
+
+    .page-header p {
+      color: var(--muted);
+      font-size: 15px;
+      max-width: 600px;
+      margin: auto;
+      line-height: 1.7;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 25px;
+      margin-bottom: 40px;
+    }
+
+    .kpi-card {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(217, 155, 174, 0.15);
+      text-align: center;
+    }
+
+    .kpi-card span {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .kpi-card h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 38px;
+      color: var(--wine);
+      margin-top: 10px;
+    }
+
+    .section-box {
+      background: white;
+      border-radius: 12px;
+      padding: 35px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(217, 155, 174, 0.15);
+    }
+
+    .section-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 25px;
+    }
+
+    .section-box h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      color: var(--wine-dark);
+      margin: 0;
+    }
+
+    .recuperar-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .select-recuperar {
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--pink);
+      font-size: 12px;
+      color: var(--text);
+      background: var(--white);
+    }
+
+    .table-responsive {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    th, td {
+      padding: 15px 18px;
+      border-bottom: 1px solid #f0e6eb;
+    }
+
+    th {
+      background-color: var(--pink-light);
+      color: var(--wine);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 1px;
+    }
+
+    td { color: var(--text); }
+
+    tr:hover td { background-color: #fbf7f4; }
+
+    .badge-venta {
+      background: #e6f4ea;
+      color: #137333;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .btn-accion {
+      background: var(--wine);
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+
+    .btn-accion:hover {
+      background: var(--wine-dark);
+    }
+
+    .btn-eliminar {
+      background: #c5221f;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+
+    .btn-eliminar:hover {
+      background: #931614;
+    }
+
+    .no-ventas {
+      text-align: center;
+      padding: 40px;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    footer {
+      background: var(--wine-dark);
+      color: white;
+      padding: 50px 25px 20px;
+      margin-top: 60px;
+    }
+
+    .footer-container {
+      max-width: 1100px;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      gap: 30px;
+      flex-wrap: wrap;
+      padding-bottom: 30px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .footer-brand p, .footer-info p, .footer-info a {
+      color: #d7c2cc;
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    .footer-bottom {
+      max-width: 1100px;
+      margin: auto;
+      padding-top: 20px;
+      color: #c9b4bf;
+      font-size: 11px;
+      text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      .kpi-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="topbar">
+    ✨ MÓDULO COMERCIAL: GESTIÓN DE VENTAS Y PEDIDOS ✨
+  </div>
+
+  <header>
+    <nav class="navbar">
+      <a href="index.html" class="logo">Beauty<span>Data</span></a>
+
+      <div class="nav-links">
+        <a href="index.html">Inicio</a>
+        <a href="productos.html">Productos</a>
+        <a href="clientes.html">Clientes</a>
+        <a href="ventas.html" class="active">Ventas</a>
+        <a href="inventario.html">Inventario</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container">
+    <div class="page-header">
+      <div class="section-tag">CONTROL DE OPERACIONES</div>
+      <h1>Historial de Ventas y Pedidos</h1>
+      <p>Consulta el desempeño comercial, cancela transacciones y recupera compras canceladas sincronizadas con el backend.</p>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <span>Ingresos Totales</span>
+        <h2 id="kpiIngresos">$0</h2>
+      </div>
+      <div class="kpi-card">
+        <span>Pedidos Activos</span>
+        <h2 id="kpiPedidos">0</h2>
+      </div>
+      <div class="kpi-card">
+        <span>Ticket Promedio</span>
+        <h2 id="kpiTicket">$0</h2>
+      </div>
+    </div>
+
+    <div class="section-box">
+      <div class="section-header-bar">
+        <h3>Historial de Transacciones Activas</h3>
+        <div class="recuperar-controls">
+          <select id="selectRecuperarVenta" class="select-recuperar" style="display:none;"></select>
+          <button id="btnRecuperarVenta" type="button" class="btn-accion" onclick="manejarRecuperarVenta()">
+            🔄 Recuperar
+          </button>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>ID Venta</th>
+              <th>Cliente</th>
+              <th>Productos</th>
+              <th>Fecha</th>
+              <th>Total</th>
+              <th>Estado</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody id="cuerpoTablaVentas">
+            <tr>
+              <td colspan="7" class="no-ventas">Cargando ventas...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-container">
+      <div class="footer-brand">
+        <div class="logo" style="color:white; margin-bottom:10px;">Beauty<span>Data</span></div>
+        <p>Plataforma comercial y analítica con tolerancia a fallos.</p>
+      </div>
+      <div class="footer-info">
+        <p><strong>Módulos</strong></p>
+        <p><a href="productos.html">Productos</a></p>
+        <p><a href="ventas.html">Ventas</a></p>
+        <p><a href="inventario.html">Inventario</a></p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      BeautyData — Proyecto Académico de Sistemas Distribuidos y Big Data
+    </div>
+  </footer>
+
+  <script>
+    function formatoCOP(valor) {
+      return '$' + Number(valor || 0).toLocaleString('es-CO');
+    }
+
+    function actualizarKPIs(ventas) {
+      const totalPedidos = ventas.length;
+      const ingresos = ventas.reduce((acc, v) => acc + Number(v.total || 0), 0);
+      const ticket = totalPedidos > 0 ? Math.round(ingresos / totalPedidos) : 0;
+
+      document.getElementById('kpiIngresos').textContent = formatoCOP(ingresos);
+      document.getElementById('kpiPedidos').textContent = totalPedidos;
+      document.getElementById('kpiTicket').textContent = formatoCOP(ticket);
+    }
+
+    function renderizarVentas(ventas) {
+      const tbody = document.getElementById('cuerpoTablaVentas');
+      actualizarKPIs(ventas);
+
+      if (!ventas || ventas.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="no-ventas">No hay ventas activas registradas.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = ventas.map(v => `
+        <tr>
+          <td><strong>${v.idVenta}</strong></td>
+          <td>${v.cliente || 'Cliente'}</td>
+          <td>${v.productos || '-'}</td>
+          <td>${v.fecha || '-'}</td>
+          <td><strong>${formatoCOP(v.total)}</strong></td>
+          <td><span class="badge-venta">Activa</span></td>
+          <td>
+            <button type="button" class="btn-eliminar" onclick="cancelarVenta('${encodeURIComponent(v.idVenta)}', '${(v.cliente || '').replace(/'/g, "\\'")}')">
+              🗑️ Cancelar
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function cargarRecuperables() {
+      try {
+        const res = await fetch('/api/ventas/recuperables');
+        const data = await res.json();
+        const lista = data.recuperables || [];
+        const select = document.getElementById('selectRecuperarVenta');
+        const btn = document.getElementById('btnRecuperarVenta');
+        if (!select || !btn) return;
+
+        if (lista.length > 1) {
+          select.innerHTML = lista.map(v =>
+            `<option value="${v.idVenta}">${v.idVenta} — ${v.cliente || 'Cliente'} (${formatoCOP(v.total)})</option>`
+          ).join('');
+          select.style.display = 'inline-block';
+          btn.textContent = `🔄 Recuperar (${lista.length} opciones)`;
+        } else if (lista.length === 1) {
+          select.style.display = 'none';
+          select.innerHTML = '';
+          btn.textContent = `🔄 Recuperar (${lista[0].idVenta})`;
+        } else {
+          select.style.display = 'none';
+          select.innerHTML = '';
+          btn.textContent = '🔄 Recuperar';
+        }
+      } catch (err) {
+        console.error('Error cargando recuperables:', err);
+      }
+    }
+
+    async function sincronizarVentasDesdeServidor() {
+      try {
+        const res = await fetch('/api/ventas');
+        const data = await res.json();
+        renderizarVentas(data.ventas || []);
+        await cargarRecuperables();
+      } catch (err) {
+        console.error('Error sincronizando ventas:', err);
+      }
+    }
+
+    async function cancelarVenta(idVentaCodificado, cliente) {
+      const idVenta = decodeURIComponent(idVentaCodificado);
+      const res = await fetch(`/api/ventas/${encodeURIComponent(idVenta)}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cliente })
+      });
+      const data = await res.json();
+      alert(data.mensaje || 'Venta cancelada.');
+      if (Array.isArray(data.ventas)) {
+        renderizarVentas(data.ventas);
+      } else {
+        await sincronizarVentasDesdeServidor();
+      }
+      await cargarRecuperables();
+    }
+
+    async function manejarRecuperarVenta() {
+      const select = document.getElementById('selectRecuperarVenta');
+      const idVentaSeleccionado = select && select.style.display !== 'none' ? select.value : null;
+
+      const res = await fetch('/api/ventas/recuperar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(idVentaSeleccionado ? { idVenta: idVentaSeleccionado } : {})
+      });
+      const data = await res.json();
+      alert(data.mensaje || (data.success ? 'Venta recuperada.' : 'No se pudo recuperar.'));
+
+      if (Array.isArray(data.ventas)) {
+        renderizarVentas(data.ventas);
+      } else {
+        await sincronizarVentasDesdeServidor();
+      }
+      await cargarRecuperables();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      sincronizarVentasDesdeServidor();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BeautyData | Directorio de Clientes</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --wine: #54283f;
+    --pink: #d99bae;
+    --cream: #fbf7f4;
+    --gold: #bd925d;
+    --text: #382c33;
+    --muted: #95858e;
+    --border: #f0e6eb;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    background: var(--cream);
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* BARRA SUPERIOR */
+.topbar {
+    background: var(--wine);
+    color: white;
+    padding: 10px;
+    text-align: center;
+    font-size: 10px;
+    letter-spacing: 2px;
+}
+
+/* NAVEGACION */
+.navbar {
+    min-height: 82px;
+    padding: 0 7%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    background: white;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+}
+
+.logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--wine);
+}
+
+.logo span {
+    color: var(--pink);
+}
+
+.logo small {
+    display: block;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 9px;
+    letter-spacing: 4px;
+    color: var(--gold);
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+}
+
+.nav-links a {
+    font-size: 12px;
+    color: #66545e;
+    font-weight: 600;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    color: #bd708e;
+}
+
+/* HERO SECCIÓN */
+.clients-hero {
+    background: linear-gradient(110deg, #f8e9ee, #fbf5f1);
+    padding: 50px 8%;
+}
+
+.clients-hero span {
+    font-size: 10px;
+    color: var(--gold);
+    letter-spacing: 4px;
+    font-weight: 700;
+}
+
+.clients-hero h1 {
+    font-family: 'Playfair Display', serif;
+    color: var(--wine);
+    font-size: clamp(30px, 4vw, 45px);
+    margin: 10px 0;
+}
+
+.clients-hero p {
+    color: #826f79;
+    font-size: 13px;
+    line-height: 1.6;
+    max-width: 600px;
+}
+
+/* MÉTRICAS (SIN NODOS) */
+.metrics-container {
+    padding: 30px 8% 10px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.metric-card {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 22px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px #54283f08;
+}
+
+.metric-card h3 {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.metric-card .value {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    color: var(--wine);
+    font-weight: 700;
+}
+
+/* PERFILES DE CLIENTES */
+.profiles-section {
+    padding: 25px 8% 80px;
+}
+
+.profiles-panel {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 25px;
+    box-shadow: 0 8px 25px #54283f08;
+}
+
+.profiles-header-title {
+    padding-bottom: 18px;
+    margin-bottom: 22px;
+    border-bottom: 1px solid var(--border);
+    font-family: 'Playfair Display', serif;
+    color: var(--wine);
+    font-size: 22px;
+}
+
+.profiles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(265px, 1fr));
+    gap: 20px;
+}
+
+.profile-card {
+    background: #fffdfd;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    box-shadow: 0 6px 18px rgba(84, 40, 63, 0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.profile-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 24px rgba(84, 40, 63, 0.12);
+}
+
+.profile-top {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.profile-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 23px;
+    font-weight: 700;
+    color: #ffffff;
+    flex-shrink: 0;
+    box-shadow: 0 6px 14px rgba(84, 40, 63, 0.18);
+}
+
+.profile-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--wine);
+    margin-bottom: 4px;
+}
+
+.profile-tag {
+    display: inline-block;
+    background: #f8e9ee;
+    color: var(--wine);
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.profile-details {
+    border-top: 1px dashed var(--border);
+    padding-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    font-size: 13px;
+    color: var(--text);
+}
+
+.profile-details span.label {
+    color: var(--muted);
+    font-weight: 600;
+}
+
+.profile-footer {
+    margin-top: auto;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    color: var(--muted);
+}
+
+.empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+/* PIE */
+footer {
+    background: #321d2b;
+    color: white;
+    text-align: center;
+    padding: 35px 15px;
+    font-size: 11px;
+}
+
+footer strong {
+    display: block;
+    font-family: 'Playfair Display', serif;
+    color: #eab5c9;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+    .metrics-container {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+    ✨ DIRECTORIO DE CLIENTES SINCRONIZADO CON EL SISTEMA ✨
+</div>
+
+<!-- NAVEGACIÓN -->
+<nav class="navbar">
+    <a href="index.html" class="logo">
+        Beauty<span>Data.</span>
+        <small>BEAUTY & COSMETICS</small>
+    </a>
+
+    <div class="nav-links">
+        <a href="index.html">Inicio</a>
+        <a href="productos.html">Productos</a>
+        <a href="clientes.html" class="active">Clientes</a>
+        <a href="ventas.html">Ventas</a>
+        <a href="inventario.html">Inventario</a>
+    </div>
+</nav>
+
+<section class="clients-hero">
+    <span>COMUNIDAD BEAUTYDATA</span>
+    <h1>Directorio de Clientes</h1>
+    <p>
+        Explora los perfiles de las clientas y compradores registrados en la tienda con su información de contacto y actividad reciente.
+    </p>
+</section>
+
+<!-- MÉTRICAS ACTUALIZADAS (Sin Nodos) -->
+<div class="metrics-container">
+    <div class="metric-card">
+        <h3>Clientes Registrados</h3>
+        <div class="value" id="totalClientes">0</div>
+    </div>
+    <div class="metric-card">
+        <h3>Estado de Seguridad</h3>
+        <div class="value" style="font-size: 20px; margin-top: 6px; color: #2e7d32;">🟢 Encriptado y Seguro</div>
+    </div>
+</div>
+
+<section class="profiles-section">
+    <div class="profiles-panel">
+        <div class="profiles-header-title">Perfiles de Clientes</div>
+        <div class="profiles-grid" id="contenedorPerfilesClientes">
+            <!-- Se llena dinámicamente con JavaScript -->
+        </div>
+    </div>
+</section>
+
+<footer>
+    <strong>BeautyData.</strong>
+    Sistema de recolección de datos y analítica para comercio de cosméticos.<br>
+    © 2026 BeautyData. Todos los derechos reservados.
+</footer>
+
+<script>
+    const COLORES_PERFIL = [
+        "#54283f",
+        "#8b3a5b",
+        "#b8844c",
+        "#6d4368",
+        "#9c5268",
+        "#48334e"
+    ];
+
+    function capitalizarNombre(nombre) {
+        const limpio = String(nombre || "").trim();
+        if (!limpio) return "Cliente BeautyData";
+        return limpio.replace(/\b\w+/g, palabra =>
+            palabra.charAt(0).toUpperCase() + palabra.slice(1).toLowerCase()
+        );
+    }
+
+    function obtenerInicial(nombre) {
+        const texto = String(nombre || "").trim();
+        return texto ? texto.charAt(0).toUpperCase() : "?";
+    }
+
+    function obtenerColorAvatar(nombre) {
+        const base = String(nombre || "BeautyData");
+        let hash = 0;
+        for (let i = 0; i < base.length; i++) {
+            hash = base.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        return COLORES_PERFIL[Math.abs(hash) % COLORES_PERFIL.length];
+    }
+
+    function renderizarClientes() {
+        const gridPerfiles = document.getElementById("contenedorPerfilesClientes");
+        const totalClientesEl = document.getElementById("totalClientes");
+        if (!gridPerfiles || !totalClientesEl) return;
+
+        const pedidos = JSON.parse(localStorage.getItem("beautydata_pedidos")) || [];
+        totalClientesEl.textContent = pedidos.length;
+
+        if (pedidos.length === 0) {
+            gridPerfiles.innerHTML = `
+                <div class="empty-state">
+                    Aún no hay clientes registrados. Ve a la sección de Productos, realiza una compra y llena tus datos para ver sus perfiles aquí.
+                </div>
+            `;
+            return;
+        }
+
+        gridPerfiles.innerHTML = pedidos.map(p => {
+            const nombreOriginal = p.cliente?.nombre || p.nombre || "Cliente BeautyData";
+            const nombreMostrar = capitalizarNombre(nombreOriginal);
+            const correo = p.cliente?.correo || p.correo || "No registrado";
+            const telefono = p.cliente?.telefono || p.telefono || "No especificado";
+            const productoCompra = p.nombre || p.producto || p.nombreProducto || "";
+            const inicial = obtenerInicial(nombreOriginal);
+            const colorAvatar = obtenerColorAvatar(nombreOriginal);
+            const fechaFormateada = p.fecha ? new Date(p.fecha).toLocaleString() : "Reciente";
+
+            return `
+                <article class="profile-card">
+                    <div class="profile-top">
+                        <div class="profile-avatar" style="background: ${colorAvatar};" aria-hidden="true">
+                            ${inicial}
+                        </div>
+                        <div>
+                            <h3 class="profile-name">${nombreMostrar}</h3>
+                            <span class="profile-tag">Cliente BeautyData</span>
+                        </div>
+                    </div>
+
+                    <div class="profile-details">
+                        <div><span class="label">Correo:</span> ${correo}</div>
+                        <div><span class="label">Teléfono:</span> ${telefono}</div>
+                        ${productoCompra ? `<div><span class="label">Última compra:</span> ${productoCompra}</div>` : ""}
+                    </div>
+
+                    <div class="profile-footer">
+                        <span>Perfil activo</span>
+                        <span>${fechaFormateada}</span>
+                    </div>
+                </article>
+            `;
+        }).join("");
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        renderizarClientes();
+    });
+
+    window.addEventListener("storage", (evento) => {
+        if (evento.key === "beautydata_pedidos" || evento.key === "beautydata_evento_sincronizacion") {
+            renderizarClientes();
+        }
+    });
+</script>
+
+</body>
+</html>
